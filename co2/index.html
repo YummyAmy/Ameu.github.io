@@ -40,7 +40,7 @@
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .chip{background:rgba(242,118,58,.12);border:1px solid rgba(242,118,58,.35);color:var(--hot2);border-radius:999px;padding:5px 10px;font:600 12px "DM Sans";cursor:pointer}
   .chip:hover{background:rgba(242,118,58,.25)}
-  .me{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .me{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
   .links{display:flex;gap:8px}
   .links a{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--ink);background:rgba(255,236,220,.06);border:1px solid var(--line);font-size:15px;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
   .links a:hover{background:rgba(242,118,58,.18);border-color:rgba(242,118,58,.5);color:var(--hot2)}
@@ -92,12 +92,6 @@
 
   <section class="compare">
     <aside class="card side">
-      <h3>Compare</h3>
-      <label for="a">One person in</label><select id="a"></select>
-      <label for="b">With people in</label><select id="b"></select>
-      <button class="swap" id="swap">⇅ Swap countries</button>
-      <label>Try these</label>
-      <div class="chips" id="chips"></div>
       <div class="me">
         <span>Amy U</span>
         <div class="links">
@@ -106,6 +100,12 @@
           <a href="https://intervalstudio.dev" target="_blank" rel="noopener" aria-label="Website" title="Website"><i class="fa-solid fa-globe"></i></a>
         </div>
       </div>
+      <h3>Compare</h3>
+      <label for="a">One person in</label><select id="a"></select>
+      <label for="b">With people in</label><select id="b"></select>
+      <button class="swap" id="swap">⇅ Swap countries</button>
+      <label>Try these</label>
+      <div class="chips" id="chips"></div>
     </aside>
     <div class="card main">
       <div class="sentence" id="sentence"></div>
