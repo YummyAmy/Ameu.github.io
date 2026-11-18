@@ -6,6 +6,7 @@
 <title>Global CO₂ Emissions: per person</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
   :root{
     --ink:#f6f1ea; --muted:#c9bcaf; --dim:#97887a; --line:rgba(255,236,220,.10);
@@ -39,6 +40,10 @@
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .chip{background:rgba(242,118,58,.12);border:1px solid rgba(242,118,58,.35);color:var(--hot2);border-radius:999px;padding:5px 10px;font:600 12px "DM Sans";cursor:pointer}
   .chip:hover{background:rgba(242,118,58,.25)}
+  .me{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .links{display:flex;gap:8px}
+  .links a{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--ink);background:rgba(255,236,220,.06);border:1px solid var(--line);font-size:15px;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
+  .links a:hover{background:rgba(242,118,58,.18);border-color:rgba(242,118,58,.5);color:var(--hot2)}
   .main{padding:24px 28px 22px}
   .sentence{font-size:26px;font-weight:700;line-height:1.3}
   .sentence b{color:var(--hot)}
@@ -93,6 +98,14 @@
       <button class="swap" id="swap">⇅ Swap countries</button>
       <label>Try these</label>
       <div class="chips" id="chips"></div>
+      <div class="me">
+        <span>Made by Amy U</span>
+        <div class="links">
+          <a href="https://www.linkedin.com/in/ame-u-395a25111/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="https://github.com/YummyAmy" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://intervalstudio.dev" target="_blank" rel="noopener" aria-label="Website" title="Website"><i class="fa-solid fa-globe"></i></a>
+        </div>
+      </div>
     </aside>
     <div class="card main">
       <div class="sentence" id="sentence"></div>
@@ -142,9 +155,9 @@ const colorOf = v => v >= 10 ? "#d9442b" : v >= worldPP ? "#f2763a" : "#a9c6c9";
   size(); addEventListener("resize", size);
   const rnd = (a,b) => a + Math.random()*(b-a);
   const newPuff = init => ({x: init ? rnd(-200, W) : rnd(-260,-60), y: rnd(H*0.15, H*1.05), r: rnd(60,170), a: rnd(.04,.1), vx: rnd(.25,.7), vy: rnd(-.18,-.04), t: rnd(0,6.28)});
-  const newStreak = init => ({x: init ? rnd(0,W) : rnd(-400,-100), y: rnd(0,H), len: rnd(120,320), v: rnd(1.6,3.4), a: rnd(.08,.18), w: rnd(.6,1.4), phase: rnd(0,6.28)});
+  const newWisp = init => ({x: init ? rnd(-300, W) : rnd(-700,-300), y: rnd(0, H), rx: rnd(220,420), ry: rnd(26,60), a: rnd(.03,.07), v: rnd(.35,.8), t: rnd(0,6.28)});
   for (let i=0;i<26;i++) puffs.push(newPuff(true));
-  for (let i=0;i<34;i++) streaks.push(newStreak(true));
+  for (let i=0;i<14;i++) streaks.push(newWisp(true));
   function frame(){
     ctx.clearRect(0,0,W,H);
     for (const p of puffs){
@@ -154,16 +167,13 @@ const colorOf = v => v >= 10 ? "#d9442b" : v >= worldPP ? "#f2763a" : "#a9c6c9";
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fill();
       if (p.x - p.r > W || p.y + p.r < 0) Object.assign(p, newPuff(false));
     }
-    ctx.lineCap = "round";
     for (const s of streaks){
-      s.x += s.v; s.phase += .02;
-      const y = s.y + Math.sin(s.phase)*6;
-      const g = ctx.createLinearGradient(s.x - s.len, y, s.x, y);
-      g.addColorStop(0, "rgba(255,220,190,0)"); g.addColorStop(1, `rgba(255,220,190,${s.a})`);
-      ctx.strokeStyle = g; ctx.lineWidth = s.w; ctx.beginPath();
-      ctx.moveTo(s.x - s.len, y + Math.sin(s.phase+1)*4);
-      ctx.quadraticCurveTo(s.x - s.len/2, y - 6, s.x, y); ctx.stroke();
-      if (s.x - s.len > W) Object.assign(s, newStreak(false));
+      s.t += .004; s.x += s.v; const y = s.y + Math.sin(s.t)*14;
+      ctx.save(); ctx.translate(s.x, y); ctx.scale(1, s.ry / s.rx);
+      const g = ctx.createRadialGradient(0,0,0,0,0,s.rx);
+      g.addColorStop(0, `rgba(215,198,184,${s.a})`); g.addColorStop(.6, `rgba(215,198,184,${s.a*.45})`); g.addColorStop(1, "rgba(215,198,184,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0,0,s.rx,0,7); ctx.fill(); ctx.restore();
+      if (s.x - s.rx > W) Object.assign(s, newWisp(false));
     }
     if (!still) requestAnimationFrame(frame);
   }
